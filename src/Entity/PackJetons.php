@@ -114,4 +114,9 @@ class PackJetons
 
         return $this;
     }
+	
+	public function __toString()
+	{
+		return $this->description." (".strval($this->prix)."‎€)";
+	}
 }

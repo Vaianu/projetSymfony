@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Utilisateur;
+use App\Entity\Achat;
 use App\Form\RegistrationFormType;
 use App\Security\UtilisateurAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use App\Repository\RoleRepository;
+use App\Repository\PackJetonsRepository;
 
 class RegistrationController extends AbstractController
 {
@@ -19,14 +21,19 @@ class RegistrationController extends AbstractController
      * @Route("/register", name="app_register")
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, 
-		GuardAuthenticatorHandler $guardHandler, UtilisateurAuthenticator $authenticator, RoleRepository $roleRepository): Response
+		GuardAuthenticatorHandler $guardHandler, UtilisateurAuthenticator $authenticator, PackJetonsRepository $packJetonsRepository, RoleRepository $roleRepository): Response
     {
         $user = new Utilisateur();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+			$achat = new Achat();
+			$packJetonsGratuit = $packJetonsRepository->find(1);
+			$packJetonsGratuit->addAchat($achat);
+			$user->addAchat($achat);
             $user->setRole($roleRepository->find(2));
+			
 			// encode the plain password
             $user->setPassword(
                 $passwordEncoder->encodePassword(
@@ -36,6 +43,7 @@ class RegistrationController extends AbstractController
             );
 
             $entityManager = $this->getDoctrine()->getManager();
+			$entityManager->persist($achat);
             $entityManager->persist($user);
             $entityManager->flush();
 

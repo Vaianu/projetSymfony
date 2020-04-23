@@ -32,6 +32,11 @@ class Achat
      * @ORM\JoinColumn(nullable=false)
      */
     private $packJetons;
+	
+	public function __construct()
+	{
+		$this->date_achat = new \DateTime('now');
+	}
 
     public function getId(): ?int
     {
@@ -73,4 +78,9 @@ class Achat
 
         return $this;
     }
+	
+	public function __toString()
+	{
+		return $this->getDateAchat()->format('d-m-Y');
+	}
 }

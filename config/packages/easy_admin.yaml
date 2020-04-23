@@ -10,3 +10,13 @@ easy_admin:
 #        - App\Entity\Utilisateur
         Role:
             class: App\Entity\Role
+        PackJetons:
+            class: App\Entity\PackJetons
+        Achat:
+            class: App\Entity\Achat
+        HistoriqueEncheres:
+            class: App\Entity\HistoriqueEncheres
+        Enchere:
+            class: App\Entity\Enchere
+        Produit:
+            class: App\Entity\Produit

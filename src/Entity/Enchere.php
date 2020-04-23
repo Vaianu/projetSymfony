@@ -19,30 +19,25 @@ class Enchere
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $numero;
-
-    /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $date_debut;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $date_fin;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\HistoriqueEncheres", mappedBy="enchere", orphanRemoval=true)
-     */
-    private $historiqueEncheres;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Produit", inversedBy="encheres")
      * @ORM\JoinColumn(nullable=false)
      */
     private $produit;
+	
+	/**
+     * @ORM\OneToMany(targetEntity="App\Entity\HistoriqueEncheres", mappedBy="enchere", orphanRemoval=true)
+     */
+    private $historiqueEncheres;
 
     public function __construct()
     {
@@ -52,18 +47,6 @@ class Enchere
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getNumero(): ?int
-    {
-        return $this->numero;
-    }
-
-    public function setNumero(int $numero): self
-    {
-        $this->numero = $numero;
-
-        return $this;
     }
 
     public function getDateDebut(): ?\DateTimeInterface

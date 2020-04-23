@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProduitRepository")
  */
@@ -131,4 +132,9 @@ class Produit
 
         return $this;
     }
+	
+	public function __toString()
+	{
+		return $this->descriptif." (".strval($this->prix)."€)";
+	}
 }

@@ -11,7 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UtilisateurRepository")
- * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ * @UniqueEntity(fields={"email"}, message="Adresse email déja utilisée")
+ * @UniqueEntity(fields={"pseudo"}, message="Pseudo déjà utilisé")
  */
 class Utilisateur implements UserInterface
 {
@@ -35,7 +36,7 @@ class Utilisateur implements UserInterface
     private $roles = [];
 	
 	/**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=20, unique=true)
      */
     private $pseudo;
 
@@ -234,6 +235,6 @@ class Utilisateur implements UserInterface
 	
 	public function __toString()
 	{
-		return $this->pseudo;
+		return $this->getEmail();
 	}
 }

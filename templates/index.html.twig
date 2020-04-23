@@ -10,10 +10,12 @@
 		<h1>Bienvenue aux Enchères</h1>
 		<div>
 		{% if app.user %}
-			You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}" class="btn btn-outline-primary" role="button">Logout</a>
+			You are logged in as {{ app.user.username }} <a href="{{ path('app_logout') }}" class="btn btn-outline-primary" role="button">Logout</a>
+			{#<p>Vous avez {{ nbjetons }} jetons gratuit offert par la maison</p>#}
+			<p><a href="{{ path('utilisateur_achat') }}">Acheter des jetons</a></p>
 		{% else %}
-			<a href="{{ path('app_login') }}" class="btn btn-outline-primary" role="button">LOGIN</a>
-			<a href="{{ path('app_register') }}" class="btn btn-outline-primary" role="button">REGISTER</a>
+			<a href="{{ path('app_login') }}" class="btn btn-outline-primary" role="button">SE CONNECTER</a>
+			<a href="{{ path('app_register') }}" class="btn btn-outline-primary" role="button">S'INSCRIRE</a>
 		{% endif %}
 		</div>
 		{% endblock %}

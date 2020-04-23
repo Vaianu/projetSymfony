@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Acheter des jetons{% endblock %}
+
+{% block body %}
+    <h1>Acheter des jetons</h1>
+
+    {{ include('_form.html.twig') }}
+
+    <a href="{{ path('index') }}">back to list</a>
+{% endblock %}
