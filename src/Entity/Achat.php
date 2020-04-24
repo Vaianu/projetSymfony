@@ -35,6 +35,7 @@ class Achat
 	
 	public function __construct()
 	{
+		date_default_timezone_set('Europe/Paris');
 		$this->date_achat = new \DateTime('now');
 	}
 
@@ -81,6 +82,6 @@ class Achat
 	
 	public function __toString()
 	{
-		return $this->getDateAchat()->format('d-m-Y');
+		return $this->date_achat->format('d-m-Y');
 	}
 }

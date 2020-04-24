@@ -115,4 +115,10 @@ class Enchere
 
         return $this;
     }
+	
+	public function __toString()
+	{
+		return $this->produit->getDescriptif()." (".strval($this->produit->getPrix())."€) 
+			du ".$this->date_debut->format('d-m-Y H:i:s')." à ".$this->date_fin->format('d-m-Y H:i:s');
+	}
 }

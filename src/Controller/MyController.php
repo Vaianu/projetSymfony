@@ -2,35 +2,33 @@
 
 namespace App\Controller;
 
-use App\Entity\Utilisateur;
-use App\Repository\UtilisateurRepository;
+use App\Entity\Achat;
+use App\Entity\HistoriqueEncheres;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Achat;
 use App\Form\AchatFormType;
+use App\Form\HistoriqueEncheresType;
+use App\Repository\EnchereRepository;
+
 
 class MyController extends AbstractController
 {
     /**
      * @Route("/", name="index")
      */
-    public function index(UtilisateurRepository $utilisateurRepository): Response
+    public function index(EnchereRepository $enchereRepository): Response
     {
-        /*$utilisateur = $utilisateurRepository->find($this->getUser()->getId());
-		$nbJetons = 0;
-		for($i=0;$i<count($utilisateur->getAchats());$i++)
-			$nbJetons += $utilisateur->getAchats()[$i]->getPackJetons()->getNbjetons();*/
 		return $this->render('index.html.twig', [
-			//'nbjetons' => $nbJetons,
+			'encheres' => $enchereRepository->findAll(),
 		]);
     }
 
     /**
-     * @Route("/achat", name="utilisateur_achat", methods={"GET","POST"})
+     * @Route("/utilisateur/acheter", name="utilisateur_acheter", methods={"GET","POST"})
      */
-    public function achat(Request $request): Response
+    public function acheterPackJetons(Request $request): Response
     {
 		$achat = new Achat();
         $form = $this->createForm(AchatFormType::class, $achat);
@@ -41,12 +39,47 @@ class MyController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($achat);
             $entityManager->flush();
-
-            return $this->redirectToRoute('index');
+			
+			return $this->render('acheter.html.twig', [
+            'form' => $form->createView(),
+			'nameButon' => "Acheter",
+			'messageConfirmation' => "Votre achat a bien été effectué",
+        ]);
         }
 
-        return $this->render('achat.html.twig', [
+        return $this->render('acheter.html.twig', [
             'form' => $form->createView(),
+			'nameButon' => "Acheter",
+			'messageConfirmation' => null,
+        ]);
+    }
+	
+	/**
+     * @Route("/utilisateur/placer", name="utilisateur_placer", methods={"GET","POST"})
+     */
+    public function placerOffre(Request $request): Response
+    {
+		$historiqueEncheres = new HistoriqueEncheres();
+        $form = $this->createForm(HistoriqueEncheresType::class, $historiqueEncheres);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+			$this->getUser()->addHistoriqueEnchere($historiqueEncheres);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($historiqueEncheres);
+            $entityManager->flush();
+		
+			return $this->render('placer.html.twig', [
+            'form' => $form->createView(),
+			'nameButon' => "Placer",
+			'messageConfirmation' => "Votre offre de ".strval($historiqueEncheres->getPrix())."€ a bien été placé sur cette enchère",
+        ]);
+        }
+
+        return $this->render('placer.html.twig', [
+            'form' => $form->createView(),
+			'nameButon' => "Placer",
+			'messageConfirmation' => null,
         ]);
     }
 

@@ -22,7 +22,7 @@ class HistoriqueEncheres
     private $date_enchere;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $prix;
 
@@ -37,6 +37,13 @@ class HistoriqueEncheres
      * @ORM\JoinColumn(nullable=false)
      */
     private $enchere;
+	
+	public function __construct()
+	{
+		// Définir le nouveau fuseau horaire
+		date_default_timezone_set('Europe/Paris');
+		$this->date_enchere = new \DateTime('now');
+	}
 
     public function getId(): ?int
     {
@@ -55,12 +62,12 @@ class HistoriqueEncheres
         return $this;
     }
 
-    public function getPrix(): ?int
+    public function getPrix(): ?float
     {
         return $this->prix;
     }
 
-    public function setPrix(int $prix): self
+    public function setPrix(float $prix): self
     {
         $this->prix = $prix;
 
@@ -90,4 +97,9 @@ class HistoriqueEncheres
 
         return $this;
     }
+	
+	public function __toString()
+	{
+		return $this->date_enchere->format('d-m-Y');
+	}
 }

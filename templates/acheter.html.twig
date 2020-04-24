@@ -8,4 +8,8 @@
     {{ include('_form.html.twig') }}
 
     <a href="{{ path('index') }}">back to list</a>
+	
+	{% if messageConfirmation %}
+		<p>{{ messageConfirmation }}</p>
+	{% endif %}
 {% endblock %}
