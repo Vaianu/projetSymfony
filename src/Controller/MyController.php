@@ -55,9 +55,9 @@ class MyController extends AbstractController
     }
 	
 	/**
-     * @Route("/utilisateur/placer", name="utilisateur_placer", methods={"GET","POST"})
+     * @Route("/utilisateur/{idEnchere}/placer", name="utilisateur_placer", methods={"GET","POST"})
      */
-    public function placerOffre(Request $request): Response
+    public function placerOffre(Request $request, EnchereRepository $enchereRepository): Response
     {
 		$historiqueEncheres = new HistoriqueEncheres();
         $form = $this->createForm(HistoriqueEncheresType::class, $historiqueEncheres);

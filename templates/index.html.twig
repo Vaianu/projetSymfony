@@ -7,22 +7,28 @@
 {% endblock %}
 
 {% block body %}
-	<div id="container_principal">
+	<div id="container-principal">
 		<header>
 			<nav>
-				<a href="{{ path('app_login') }}" class="btn btn-outline-primary" role="button">SE CONNECTER</a>
-				<a href="{{ path('app_register') }}" class="btn btn-outline-primary" role="button">S'INSCRIRE</a>
+			{% if app.user %}
+				<a href="{{ path('app_logout') }}" class="btn btn-danger" role="button">SE DECONNECTER</a>
+			{% else %}
+				<a href="{{ path('app_login') }}" class="btn btn-success" role="button">SE CONNECTER</a>
+				<a href="{{ path('app_register') }}" class="btn btn-primary" role="button">S'INSCRIRE</a>
+			{% endif %}
 			</nav>
 		</header>
-		<div id="container_second">
+		<div id="container-section">
 		<section class="form-group row"> <!-- utiliser col pour placer les produit (bootstrap) -->
 			{% for enchere in encheres %}
-			<div class="col-md-4">
+			<div class="col-md-4 produits">
 				{#<p>{{ enchere.dateDebut.format('d-m-Y H:i:s') }}</p>
 				<p>{{ enchere.dateFin.format('d-m-Y H:i:s') }}</p>#}
-				<p>{{ enchere.produit.descriptif }}</p>
-				<p>{{ enchere.produit.prix }}€</p>
-				<p><img src="{{ asset(enchere.produit.image) }}" width="140px" height="250px" alt="produit Enchère" /></p>
+				<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
+				<h2 class="prix">{{ enchere.produit.prix }}€</h2>
+				<div class="image"><img src="{{ asset(enchere.produit.image) }}" width="140px" height="250px" alt="{{ enchere.produit.descriptif }}" /></div>
+				<input class="prix-placer" type="number" step="0.01" min="0.01" max="500" name="name" required minlength="4" maxlength="8" size="10">
+				<a href="{{ path('app_login') }}" class="btn btn-warning button-placer-offre" role="button">Placer une offre</a>
 			</div>
 			{% else %}
 				<p>Pas d'encheres</p>
@@ -30,7 +36,7 @@
 		</section>
 		</div>
 		<footer>
-			<h2>Copyright 2020</h2>
+			<h2>Copyright 2020 Licence Pro ADMS</h2>
 		</footer>
 	</div>
 	{% block javascripts %}{% endblock %}

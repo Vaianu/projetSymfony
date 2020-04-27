@@ -1,16 +1,11 @@
-body {
-	
-}
-
-#container_principal {
+#container-principal {
 	width:66.6665%; 
 	margin:auto;
-	margin-top: 20px;
 	padding: 0 10px;
 	box-sizing: border-box;
 }
 
-#container_second {
+#container-section {
 	padding: 1.5em;
 	box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
 	border-radius: 5px;
@@ -18,14 +13,51 @@ body {
 }
 
 header {
-	border: 1px solid black;
-	background-color: grey;
+	border: 1px solid grey;
+	background-color: black;
 	width: 100%;
 	height: 60px;
 }
 
 header nav {
 	text-align: right;
+	margin-top: 7px;
+}
+
+header nav a {
+	margin-right: 5px;
+}
+
+div.produits {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+div.produits h1.descriptif {
+	font-size: 1.3em;
+	color: red;
+}
+
+div.produits h2.prix {
+	font-size: 1.1em;
+}
+
+div.produits div.image {
+	opacity: 0.9;
+}
+
+div.produits div.image:hover {
+	opacity: 1;
+}
+
+div.produits input.prix-placer {
+    margin: .4rem 0;
+}
+
+div.produits a.button-placer-offre {
+	display: block;
+	margin: auto;
+	width: 150px;
 }
 
 footer {
@@ -40,5 +72,68 @@ footer h2 {
 	color: white;
 	font-size: 1.3em;
 	margin-top: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.glyphicon-hover {
+  border-radius: 25px;
+  border: 1px solid transparent;
+  padding: 2px;
+}
+
+.glyphicon-hover:hover, .glyphicon:focus {
+  border-radius: 5px;
+  border: 1px solid black;
+  color: red;
+}
+
+@media (min-width: 768px) {
+  .navbar-right .dropdown-menu > li > a {
+    padding-right: 46px;
+    position: relative;
+  }
+  .navbar-right .dropdown-menu > li > a > .glyphicon {
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: 5px;
+  }
 }
 
