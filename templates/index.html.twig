@@ -2,42 +2,114 @@
 
 {% block title %}Bienvenue aux Enchères{% endblock %}
 {% block stylesheets %}
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<link href="{{ asset('css/mon_style.css') }}" type="text/css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
-	<div id="container-principal">
-		<header>
-			<nav>
-			{% if app.user %}
-				<a href="{{ path('app_logout') }}" class="btn btn-danger" role="button">SE DECONNECTER</a>
-			{% else %}
-				<a href="{{ path('app_login') }}" class="btn btn-success" role="button">SE CONNECTER</a>
-				<a href="{{ path('app_register') }}" class="btn btn-primary" role="button">S'INSCRIRE</a>
-			{% endif %}
-			</nav>
-		</header>
-		<div id="container-section">
-		<section class="form-group row"> <!-- utiliser col pour placer les produit (bootstrap) -->
-			{% for enchere in encheres %}
-			<div class="col-md-4 produits">
-				{#<p>{{ enchere.dateDebut.format('d-m-Y H:i:s') }}</p>
-				<p>{{ enchere.dateFin.format('d-m-Y H:i:s') }}</p>#}
-				<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
-				<h2 class="prix">{{ enchere.produit.prix }}€</h2>
-				<div class="image"><img src="{{ asset(enchere.produit.image) }}" width="140px" height="250px" alt="{{ enchere.produit.descriptif }}" /></div>
-				<input class="prix-placer" type="number" step="0.01" min="0.01" max="500" name="name" required minlength="4" maxlength="8" size="10">
-				<a href="{{ path('app_login') }}" class="btn btn-warning button-placer-offre" role="button">Placer une offre</a>
+	<header id="BandeMenuHaut">
+		<nav class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<span>
+					<img id="XXX-brand-logo" alt="Brand" src="{{ asset('images/logo.png') }}" width="20" height="20">
+				</span>
+			</a>
+		</nav>
+		<nav class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-left">
+				<li>
+					<a href="/XXX">Accueil</a>
+				</li>
+
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XXX<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="/XXX">XXX</a></li>
+						<li><a href="/XXX">XXX</a></li>
+					</ul>
+				</li>
+	
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XXX<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="/XXX/XXX">XXX</a></li>
+						<li><a href="/XXX/XXX">XXX</a></li>
+					</ul>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<!--<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="/Admin/Role/ManageRoles">Manage Roles</a></li>
+						<li><a href="/Admin/Group/ManageGroups">Manage Groups</a></li>
+						<li><a href="/Admin/User/ManageUsers">Manage Users</a></li>
+					</ul>
+				</li>-->
+				
+				
+				{% if app.user %}
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> {{ app.user.username }}<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="/Account/Account/Settings"><span class="glyphicon glyphicon-wrench"></span>Settings</a></li>
+							<li><a href="/Account/Account/ChangePassword"><span class="glyphicon glyphicon-lock"></span>Change Password</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="{{ path('app_logout') }}"><span class="glyphicon glyphicon-log-out"></span>Se déconnecter</a></li>
+						</ul>
+					</li>
+					
+				{% else %}
+				
+						<a href="{{ path('app_login') }}" class="btn btn-primary btn-connexion-inscription" role="button">SE CONNECTER</a>
+						<a href="{{ path('app_register') }}" class="btn btn-success btn-connexion-inscription" role="button">S'INSCRIRE</a>
+					
+				{% endif %}
+			</ul>
+		</nav>
+	</header>
+	
+	<div class="container">
+		<section>
+			<div class="form-group row">
+				{% for enchere in encheres %}
+					<div class="col-md-4 produits">
+						{#<p>{{ enchere.dateDebut.format('d-m-Y H:i:s') }}</p>
+						<p>{{ enchere.dateFin.format('d-m-Y H:i:s') }}</p>#}
+						<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
+						<h2 class="prix text-danger">{{ enchere.produit.prix }}€</h2>
+						<div class="image"><img src="{{ asset(enchere.produit.image) }}" width="140px" height="250px" alt="{{ enchere.produit.descriptif }}" /></div>
+						<form action="{{ path('utilisateur_placer', {'id': enchere.id}) }}" method="POST">
+							<input class="prix-placer" type="number" placeholder="de 0.01€ à 500€" step="0.01" min="0.01" max="500" name="prix_mise" required>
+							<button class="btn btn-warning button-placer-offre">Placer une offre</button>
+						</form>
+						
+						
+						{% if idEnchereMessage != null and idEnchereMessage == enchere.id %}
+							<p class="text-info message-mise-confirmation">{{ messageConfirmation }}</p>
+						{% else %}
+							<p class="message-mise-confirmation-a-masquer">{{ messageConfirmation }}</p>
+						{% endif %}
+					</div>
+				{% else %}
+					<p>Pas d'encheres</p>
+				{% endfor %}
 			</div>
-			{% else %}
-				<p>Pas d'encheres</p>
-			{% endfor %}
 		</section>
-		</div>
-		<footer>
-			<h2>Copyright 2020 Licence Pro ADMS</h2>
-		</footer>
 	</div>
-	{% block javascripts %}{% endblock %}
+	<footer>
+		<h2>Copyright 2020 Licence Pro ADMS</h2>
+	</footer>
+
 {% endblock %}
+
+{% block javascripts %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+{% endblock %}
+

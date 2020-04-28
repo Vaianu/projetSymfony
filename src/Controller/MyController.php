@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Achat;
 use App\Entity\HistoriqueEncheres;
+use App\Entity\Enchere;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +23,36 @@ class MyController extends AbstractController
     {
 		return $this->render('index.html.twig', [
 			'encheres' => $enchereRepository->findAll(),
+			'idEnchereMessage' => null,
+			'messageConfirmation' => null,
+		]);
+    }
+	
+	/**
+     * @Route("/utilisateur/{id}/placer", name="utilisateur_placer", methods={"GET","POST"})
+     */
+    public function placerOffre(Request $request, Enchere $enchere, EnchereRepository $enchereRepository): Response
+    {
+        if (isset($_POST['prix_mise']) && $_POST['prix_mise'] > 0 && $_POST['prix_mise'] < 500) {
+			$historiqueEncheres = new HistoriqueEncheres();
+			$historiqueEncheres->setEnchere($enchere);
+			$historiqueEncheres->setPrix($_POST['prix_mise']);
+			$this->getUser()->addHistoriqueEnchere($historiqueEncheres);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($historiqueEncheres);
+            $entityManager->flush();
+		
+			return $this->render('index.html.twig', [
+			'encheres' => $enchereRepository->findAll(),
+			'idEnchereMessage' => $enchere->getId(),
+			'messageConfirmation' => "Votre mise de ".strval($historiqueEncheres->getPrix())." € a bien été placé sur cette enchère",
+        ]);
+        }
+
+       return $this->render('index.html.twig', [
+			'encheres' => $enchereRepository->findAll(),
+			'idEnchereMessage' => null,
+			'messageConfirmation' => null,
 		]);
     }
 
@@ -54,33 +85,4 @@ class MyController extends AbstractController
         ]);
     }
 	
-	/**
-     * @Route("/utilisateur/{idEnchere}/placer", name="utilisateur_placer", methods={"GET","POST"})
-     */
-    public function placerOffre(Request $request, EnchereRepository $enchereRepository): Response
-    {
-		$historiqueEncheres = new HistoriqueEncheres();
-        $form = $this->createForm(HistoriqueEncheresType::class, $historiqueEncheres);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-			$this->getUser()->addHistoriqueEnchere($historiqueEncheres);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($historiqueEncheres);
-            $entityManager->flush();
-		
-			return $this->render('placer.html.twig', [
-            'form' => $form->createView(),
-			'nameButon' => "Placer",
-			'messageConfirmation' => "Votre offre de ".strval($historiqueEncheres->getPrix())."€ a bien été placé sur cette enchère",
-        ]);
-        }
-
-        return $this->render('placer.html.twig', [
-            'form' => $form->createView(),
-			'nameButon' => "Placer",
-			'messageConfirmation' => null,
-        ]);
-    }
-
 }
