@@ -1,0 +1,41 @@
+header {
+	background-color: #000000;
+}
+
+section h1 {
+	text-align: center;
+}
+
+a.btn-connexion-inscription {
+	margin-top: 7px;
+	margin-right: 10px;
+}
+
+footer {
+	border: 1px solid black;
+	background-color: #000000;
+	height: 100px;
+	margin-top: 545px;
+}
+
+footer h2 {
+	color: white;
+	text-align: center;
+	font-size: 1.5em;
+	margin-top: 35px;
+}
+
+/* Place correctement le menu déroulant user (tout à droite) */
+@media (min-width: 768px) {
+  .navbar-right .dropdown-menu > li > a {
+    padding-right: 46px;
+    position: relative;
+  }
+  .navbar-right .dropdown-menu > li > a > .glyphicon {
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: 5px;
+  }
+}
+

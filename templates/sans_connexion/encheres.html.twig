@@ -3,7 +3,7 @@
 {% block title %}Bienvenue aux Enchères{% endblock %}
 {% block stylesheets %}
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	<link href="{{ asset('css/mon_style.css') }}" type="text/css" rel="stylesheet">
+	<link href="{{ asset('css/encheres.css') }}" type="text/css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -23,49 +23,28 @@
 		<nav class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-left">
 				<li>
-					<a href="/XXX">Accueil</a>
+					<a href="{{ path('index') }}">Accueil</a>
 				</li>
 
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XXX<span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="/XXX">XXX</a></li>
-						<li><a href="/XXX">XXX</a></li>
-					</ul>
-				</li>
-	
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">XXX<span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="/XXX/XXX">XXX</a></li>
-						<li><a href="/XXX/XXX">XXX</a></li>
-					</ul>
+					<a href="{{ path('encheres') }}">Enchères</a>
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<!--<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="/Admin/Role/ManageRoles">Manage Roles</a></li>
-						<li><a href="/Admin/Group/ManageGroups">Manage Groups</a></li>
-						<li><a href="/Admin/User/ManageUsers">Manage Users</a></li>
-					</ul>
-				</li>-->
-				
-				
 				{% if app.user %}
+					<li class="dropdown">
+						<a href="{{ path('utilisateur_acheter') }}">Acheter des jetons <span class="glyphicon glyphicon-hand-left"></span></a>
+					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> {{ app.user.username }}<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="/Account/Account/Settings"><span class="glyphicon glyphicon-wrench"></span>Settings</a></li>
-							<li><a href="/Account/Account/ChangePassword"><span class="glyphicon glyphicon-lock"></span>Change Password</a></li>
+							<li><a href="/Account/Account/Settings"><span class="glyphicon glyphicon-star"></span>Mes enchères</a></li>
+							<li><a href="/Account/Account/ChangePassword"><span class="glyphicon glyphicon-euro"></span>Mes achats</a></li>
 							<li role="separator" class="divider"></li>
 							<li><a href="{{ path('app_logout') }}"><span class="glyphicon glyphicon-log-out"></span>Se déconnecter</a></li>
 						</ul>
 					</li>
-					
 				{% else %}
-				
 						<a href="{{ path('app_login') }}" class="btn btn-primary btn-connexion-inscription" role="button">SE CONNECTER</a>
 						<a href="{{ path('app_register') }}" class="btn btn-success btn-connexion-inscription" role="button">S'INSCRIRE</a>
 					
@@ -84,17 +63,10 @@
 						<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
 						<h2 class="prix text-danger">{{ enchere.produit.prix }}€</h2>
 						<div class="image"><img src="{{ asset(enchere.produit.image) }}" width="140px" height="250px" alt="{{ enchere.produit.descriptif }}" /></div>
-						<form action="{{ path('utilisateur_placer', {'id': enchere.id}) }}" method="POST">
+						<form action="{{ path('utilisateur_placer') }}" method="POST">
 							<input class="prix-placer" type="number" placeholder="de 0.01€ à 500€" step="0.01" min="0.01" max="500" name="prix_mise" required>
-							<button class="btn btn-warning button-placer-offre">Placer une offre</button>
+							<button class="btn btn-warning button-placer-offre" name="id_enchere" value="{{ enchere.id }}">Placer une offre</button>
 						</form>
-						
-						
-						{% if idEnchereMessage != null and idEnchereMessage == enchere.id %}
-							<p class="text-info message-mise-confirmation">{{ messageConfirmation }}</p>
-						{% else %}
-							<p class="message-mise-confirmation-a-masquer">{{ messageConfirmation }}</p>
-						{% endif %}
 					</div>
 				{% else %}
 					<p>Pas d'encheres</p>

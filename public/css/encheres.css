@@ -27,6 +27,7 @@ div.produits h2.prix {
 
 div.produits div.image {
 	opacity: 0.9;
+	
 }
 
 div.produits div.image:hover {
@@ -45,15 +46,6 @@ div.produits button.button-placer-offre {
 	margin: auto;
 	width: 130px;
 	box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
-}
-
-div.produits p.message-mise-confirmation {
-	margin-top: 10px;
-}
-
-div.produits p.message-mise-confirmation-a-masquer {
-	margin-top: 10px;
-	opacity: 0;
 }
 
 footer {

@@ -21,39 +21,40 @@ class MyController extends AbstractController
      */
     public function index(EnchereRepository $enchereRepository): Response
     {
-		return $this->render('index.html.twig', [
+		return $this->render('sans_connexion/index.html.twig', []);
+    }
+	
+	/**
+     * @Route("/encheres", name="encheres", methods={"GET"})
+     */
+    public function encheres(EnchereRepository $enchereRepository): Response
+    {
+		return $this->render('sans_connexion/encheres.html.twig', [
 			'encheres' => $enchereRepository->findAll(),
-			'idEnchereMessage' => null,
-			'messageConfirmation' => null,
 		]);
     }
 	
 	/**
-     * @Route("/utilisateur/{id}/placer", name="utilisateur_placer", methods={"GET","POST"})
+     * @Route("/utilisateur/placer", name="utilisateur_placer", methods={"GET","POST"})
      */
-    public function placerOffre(Request $request, Enchere $enchere, EnchereRepository $enchereRepository): Response
-    {
-        if (isset($_POST['prix_mise']) && $_POST['prix_mise'] > 0 && $_POST['prix_mise'] < 500) {
-			$historiqueEncheres = new HistoriqueEncheres();
-			$historiqueEncheres->setEnchere($enchere);
-			$historiqueEncheres->setPrix($_POST['prix_mise']);
-			$this->getUser()->addHistoriqueEnchere($historiqueEncheres);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($historiqueEncheres);
-            $entityManager->flush();
-		
-			return $this->render('index.html.twig', [
-			'encheres' => $enchereRepository->findAll(),
-			'idEnchereMessage' => $enchere->getId(),
-			'messageConfirmation' => "Votre mise de ".strval($historiqueEncheres->getPrix())." € a bien été placé sur cette enchère",
-        ]);
+    public function placerOffre(EnchereRepository $enchereRepository): Response
+    {	
+		if ($this->getUser() && isset($_POST['prix_mise']) && isset($_POST['id_enchere']) && !empty($_POST['prix_mise'])) {
+				$historiqueEncheres = new HistoriqueEncheres();
+				$enchere = $enchereRepository->find($_POST['id_enchere']);
+				$historiqueEncheres->setEnchere($enchere);
+				$historiqueEncheres->setPrix($_POST['prix_mise']);
+				$this->getUser()->addHistoriqueEnchere($historiqueEncheres);
+				$entityManager = $this->getDoctrine()->getManager();
+				$entityManager->persist($historiqueEncheres);
+				$entityManager->flush();
         }
-
-       return $this->render('index.html.twig', [
-			'encheres' => $enchereRepository->findAll(),
-			'idEnchereMessage' => null,
-			'messageConfirmation' => null,
-		]);
+		else
+		{
+			return $this->redirectToRoute('app_login');
+		}
+		
+		return $this->redirectToRoute('encheres');
     }
 
     /**
@@ -61,28 +62,35 @@ class MyController extends AbstractController
      */
     public function acheterPackJetons(Request $request): Response
     {
-		$achat = new Achat();
-        $form = $this->createForm(AchatFormType::class, $achat);
-        $form->handleRequest($request);
+		if($this->getUser())
+		{
+			$achat = new Achat();
+			$form = $this->createForm(AchatFormType::class, $achat);
+			$form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-			$this->getUser()->addAchat($achat);
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($achat);
-            $entityManager->flush();
-			
+			if ($form->isSubmitted() && $form->isValid()) {
+				$this->getUser()->addAchat($achat);
+				$entityManager = $this->getDoctrine()->getManager();
+				$entityManager->persist($achat);
+				$entityManager->flush();
+				
+				return $this->render('acheter.html.twig', [
+				'form' => $form->createView(),
+				'nameButon' => "Acheter",
+				'messageConfirmation' => "Votre achat a bien été effectué",
+			]);
+			}
+	
 			return $this->render('acheter.html.twig', [
-            'form' => $form->createView(),
-			'nameButon' => "Acheter",
-			'messageConfirmation' => "Votre achat a bien été effectué",
-        ]);
-        }
-
-        return $this->render('acheter.html.twig', [
-            'form' => $form->createView(),
-			'nameButon' => "Acheter",
-			'messageConfirmation' => null,
-        ]);
+				'form' => $form->createView(),
+				'nameButon' => "Acheter",
+				'messageConfirmation' => null,
+			]);
+		}
+		else
+		{
+			return $this->redirectToRoute('app_login');
+		}
     }
 	
 }
