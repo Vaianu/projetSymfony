@@ -21,6 +21,23 @@ class MyController extends AbstractController
      */
     public function index(EnchereRepository $enchereRepository): Response
     {
+		if($user = $this->getUser())
+		{
+			$achats = $user->getAchats();
+			$nbJetons = 0;
+			
+			foreach($achats as $achat)
+			{
+				$nbJetons += $achat->getPackjetons()->getNbjetons();
+			}
+			$nbJetons -= count($user->getHistoriqueEncheres());
+			
+			return $this->render('sans_connexion/index.html.twig', [
+			'encheres' => $enchereRepository->findAll(),
+			'nbJetons' => $nbJetons,
+			]);
+		}
+		
 		return $this->render('sans_connexion/index.html.twig', []);
     }
 	
@@ -29,8 +46,67 @@ class MyController extends AbstractController
      */
     public function encheres(EnchereRepository $enchereRepository): Response
     {
+		if($user = $this->getUser())
+		{
+			$achats = $user->getAchats();
+			$nbJetons = 0;
+			
+			foreach($achats as $achat)
+			{
+				$nbJetons += $achat->getPackjetons()->getNbjetons();
+			}
+			$nbJetons -= count($user->getHistoriqueEncheres());
+			
+			return $this->render('sans_connexion/encheres.html.twig', [
+			'encheres' => $enchereRepository->findAll(),
+			'nbJetons' => $nbJetons,
+			]);
+		}
+		
 		return $this->render('sans_connexion/encheres.html.twig', [
 			'encheres' => $enchereRepository->findAll(),
+		]);
+    }
+	
+	/**
+     * @Route("/utilisateur/mes-encheres", name="utilisateur_historiqueEncheres", methods={"GET"})
+     */
+    public function historiqueEncheres(): Response
+    {
+		$user = $this->getUser();
+		$achats = $user->getAchats();
+		$nbJetons = 0;
+			
+		foreach($achats as $achat)
+		{
+			$nbJetons += $achat->getPackjetons()->getNbjetons();
+		}
+		$nbJetons -= count($user->getHistoriqueEncheres());
+			
+		return $this->render('utilisateur/historiqueEncheres.html.twig', [
+		'historiqueEncheres' => $this->getUser()->getHistoriqueEncheres(),
+		'nbJetons' => $nbJetons,
+		]);
+    }
+	
+	/**
+     * @Route("/utilisateur/mes-achats", name="utilisateur_achats", methods={"GET"})
+     */
+    public function achats(): Response
+    {
+		$user = $this->getUser();
+		$achats = $user->getAchats();
+		$nbJetons = 0;
+			
+		foreach($achats as $achat)
+		{
+			$nbJetons += $achat->getPackjetons()->getNbjetons();
+		}
+		$nbJetons -= count($user->getHistoriqueEncheres());
+		
+		return $this->render('utilisateur/achats.html.twig', [
+		'achats' => $this->getUser()->getAchats(),
+		'nbJetons' => $nbJetons,
 		]);
     }
 	
@@ -39,19 +115,26 @@ class MyController extends AbstractController
      */
     public function placerOffre(EnchereRepository $enchereRepository): Response
     {	
-		if ($this->getUser() && isset($_POST['prix_mise']) && isset($_POST['id_enchere']) && !empty($_POST['prix_mise'])) {
+		if(isset($_POST['prix_mise']) && isset($_POST['id_enchere']) && !empty($_POST['prix_mise'])) {
+			$user = $this->getUser();
+			$achats = $user->getAchats();
+			$nbJetons = 0;
+			foreach($achats as $achat)
+			{
+				$nbJetons += $achat->getPackjetons()->getNbjetons(); 
+			}
+			
+			if($nbJetons > count($user->getHistoriqueEncheres()))
+			{
 				$historiqueEncheres = new HistoriqueEncheres();
 				$enchere = $enchereRepository->find($_POST['id_enchere']);
 				$historiqueEncheres->setEnchere($enchere);
 				$historiqueEncheres->setPrix($_POST['prix_mise']);
-				$this->getUser()->addHistoriqueEnchere($historiqueEncheres);
+				$user->addHistoriqueEnchere($historiqueEncheres);
 				$entityManager = $this->getDoctrine()->getManager();
 				$entityManager->persist($historiqueEncheres);
 				$entityManager->flush();
-        }
-		else
-		{
-			return $this->redirectToRoute('app_login');
+			}
 		}
 		
 		return $this->redirectToRoute('encheres');
@@ -62,35 +145,28 @@ class MyController extends AbstractController
      */
     public function acheterPackJetons(Request $request): Response
     {
-		if($this->getUser())
-		{
-			$achat = new Achat();
-			$form = $this->createForm(AchatFormType::class, $achat);
-			$form->handleRequest($request);
+		$achat = new Achat();
+		$form = $this->createForm(AchatFormType::class, $achat);
+		$form->handleRequest($request);
 
-			if ($form->isSubmitted() && $form->isValid()) {
-				$this->getUser()->addAchat($achat);
-				$entityManager = $this->getDoctrine()->getManager();
-				$entityManager->persist($achat);
-				$entityManager->flush();
+		if ($form->isSubmitted() && $form->isValid()) {
+			$this->getUser()->addAchat($achat);
+			$entityManager = $this->getDoctrine()->getManager();
+			$entityManager->persist($achat);
+			$entityManager->flush();
 				
-				return $this->render('acheter.html.twig', [
-				'form' => $form->createView(),
-				'nameButon' => "Acheter",
-				'messageConfirmation' => "Votre achat a bien été effectué",
+			return $this->render('utilisateur/acheter.html.twig', [
+			'form' => $form->createView(),
+			'nameButon' => "Acheter",
+			'messageConfirmation' => "Votre achat a bien été effectué",
 			]);
-			}
+		}
 	
-			return $this->render('acheter.html.twig', [
-				'form' => $form->createView(),
-				'nameButon' => "Acheter",
-				'messageConfirmation' => null,
-			]);
-		}
-		else
-		{
-			return $this->redirectToRoute('app_login');
-		}
+		return $this->render('utilisateur/acheter.html.twig', [
+			'form' => $form->createView(),
+			'nameButon' => "Acheter",
+			'messageConfirmation' => null,
+		]);
     }
 	
 }

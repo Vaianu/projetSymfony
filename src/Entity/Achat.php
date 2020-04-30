@@ -17,7 +17,7 @@ class Achat
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $date_achat;
 
@@ -82,6 +82,6 @@ class Achat
 	
 	public function __toString()
 	{
-		return $this->date_achat->format('d-m-Y');
+		return $this->date_achat->format('d-m-Y H:i:s');
 	}
 }

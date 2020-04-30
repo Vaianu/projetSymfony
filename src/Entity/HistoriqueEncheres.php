@@ -100,6 +100,6 @@ class HistoriqueEncheres
 	
 	public function __toString()
 	{
-		return $this->date_enchere->format('d-m-Y');
+		return $this->date_enchere->format('d-m-Y H:i:s');
 	}
 }

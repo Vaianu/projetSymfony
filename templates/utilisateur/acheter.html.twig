@@ -5,9 +5,9 @@
 {% block body %}
     <h1>Acheter des jetons</h1>
 
-    {{ include('_form.html.twig') }}
+    {{ include('utilisateur/_form.html.twig') }}
 
-    <a href="{{ path('index') }}">back to list</a>
+    <a href="{{ path('index') }}">revenir à l'accueil</a>
 	
 	{% if messageConfirmation %}
 		<p>{{ messageConfirmation }}</p>

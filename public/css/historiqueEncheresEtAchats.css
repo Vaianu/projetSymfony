@@ -32,51 +32,11 @@ a.btn-connexion-inscription {
 	flex: 1;
 }
 
-section {
-	padding: 1.5em;
-	box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
-}
-
-div.produits {
-	text-align: center;
-	margin-bottom: 30px;
-}
-
-div.produits h1.descriptif {
-	font-size: 1.3em;
-}
-
-div.produits h2.prix {
-	font-size: 1.1em;
-}
-
-div.produits div.image {
-	opacity: 0.9;
-	
-}
-
-div.produits div.image:hover {
-	opacity: 1;
-}
-
-div.produits input.prix-placer {
-    margin: 2rem 0;
-	width: 170px;
-	height: 30px;
-	box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
-}
-
-div.produits button.button-placer-offre {
-	display: block;
-	margin: auto;
-	width: 130px;
-	box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
-}
-
 footer {
 	border: 1px solid black;
 	background-color: #000000;
 	height: 100px;
+	margin-top: 55px;
 }
 
 footer h2 {
@@ -86,7 +46,11 @@ footer h2 {
 	margin-top: 35px;
 }
 
-/* Place correctement le menu déroulant user (tout à droite) */
+table thead tr th, table tbody tr td {
+	text-align: center;
+}
+
+/* Place correctement les logo des menus déroulant user (tout à droite) */
 @media (min-width: 768px) {
   .navbar-right .dropdown-menu > li > a {
     padding-right: 46px;
