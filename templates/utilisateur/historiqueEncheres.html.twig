@@ -76,7 +76,7 @@
 						<tr>
 							<td>{{ historiqueEnchere.prix }} €</td>
 							<td>{{ historiqueEnchere.enchere.produit.descriptif }}</td>
-							<td>{{ historiqueEnchere }}</td>
+							<td>{{ historiqueEnchere.dateEnchere|date('d/m/Y H:i:s') }}</td>
 						</tr>
 					{% else %}
 						<tr>

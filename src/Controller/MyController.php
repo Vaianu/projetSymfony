@@ -113,9 +113,9 @@ class MyController extends AbstractController
 	/**
      * @Route("/utilisateur/placer", name="utilisateur_placer", methods={"GET","POST"})
      */
-    public function placerOffre(EnchereRepository $enchereRepository): Response
+    public function placerOffre(Request $request,EnchereRepository $enchereRepository): Response
     {	
-		if(isset($_POST['prix_mise']) && isset($_POST['id_enchere']) && !empty($_POST['prix_mise'])) {
+		if($request->request->get('prix_mise') && $request->request->get('id_enchere')) {
 			$user = $this->getUser();
 			$achats = $user->getAchats();
 			$nbJetons = 0;
@@ -127,9 +127,9 @@ class MyController extends AbstractController
 			if($nbJetons > count($user->getHistoriqueEncheres()))
 			{
 				$historiqueEncheres = new HistoriqueEncheres();
-				$enchere = $enchereRepository->find($_POST['id_enchere']);
+				$enchere = $enchereRepository->find($request->request->get('id_enchere'));
 				$historiqueEncheres->setEnchere($enchere);
-				$historiqueEncheres->setPrix($_POST['prix_mise']);
+				$historiqueEncheres->setPrix($request->request->get('prix_mise'));
 				$user->addHistoriqueEnchere($historiqueEncheres);
 				$entityManager = $this->getDoctrine()->getManager();
 				$entityManager->persist($historiqueEncheres);

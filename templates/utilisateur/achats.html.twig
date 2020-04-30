@@ -74,7 +74,7 @@
 					<tbody>
 					{% for achat in achats %}
 						<tr>
-							<td>{{ achat }}</td>
+							<td>{{ achat.dateAchat|date('d/m/Y H:i:s') }}</td>
 							<td>{{ achat.packJetons.description }}</td>
 							<td>{{ achat.packJetons.prix }} €</td>
 						</tr>
