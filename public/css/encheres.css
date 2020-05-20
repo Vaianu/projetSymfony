@@ -1,3 +1,7 @@
+body {
+	background-color: #e9e9e9;
+}
+
 .page {
 	display: flex;
 	flex-direction: column;
@@ -35,6 +39,7 @@ a.btn-connexion-inscription {
 section {
 	padding: 1.5em;
 	box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
+	background-color: white;
 }
 
 div.produits {
@@ -52,11 +57,14 @@ div.produits h2.prix {
 
 div.produits div.image {
 	opacity: 0.9;
-	
 }
 
 div.produits div.image:hover {
 	opacity: 1;
+}
+
+div.produits div.image img {
+	max-width: 200px;
 }
 
 div.produits input.prix-placer {

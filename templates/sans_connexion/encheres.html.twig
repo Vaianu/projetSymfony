@@ -67,7 +67,7 @@
 							<p>{{ enchere.dateFin.format('d-m-Y H:i:s') }}</p>#}
 							<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
 							<h2 class="prix text-danger">{{ enchere.produit.prix }}€</h2>
-							<div class="image"><img src="{{ asset(enchere.produit.image) }}" width="140px" height="250px" alt="{{ enchere.produit.descriptif }}" /></div>
+							<div class="image"><img src="{{ asset(enchere.produit.image) }}" height="220px" alt="{{ enchere.produit.descriptif }}" /></div>
 							<form action="{{ path('utilisateur_placer') }}" method="POST">
 								<input class="prix-placer" type="number" placeholder="de 0.01€ à 500€" step="0.01" min="0.01" max="500" name="prix_mise" required>
 								<button class="btn btn-warning button-placer-offre" name="id_enchere" value="{{ enchere.id }}">Placer une offre</button>
