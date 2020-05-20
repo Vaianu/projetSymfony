@@ -45,7 +45,7 @@ class MyController extends AbstractController
      * @Route("/encheres", name="encheres", methods={"GET"})
      */
     public function encheres(EnchereRepository $enchereRepository): Response
-    {
+    {	
 		if($user = $this->getUser())
 		{
 			$achats = $user->getAchats();
@@ -58,13 +58,15 @@ class MyController extends AbstractController
 			$nbJetons -= count($user->getHistoriqueEncheres());
 			
 			return $this->render('sans_connexion/encheres.html.twig', [
-			'encheres' => $enchereRepository->findAll(),
+			'encheres' => $enchereRepository->findByEnchereAvailable(),
 			'nbJetons' => $nbJetons,
 			]);
 		}
 		
+		
+		
 		return $this->render('sans_connexion/encheres.html.twig', [
-			'encheres' => $enchereRepository->findAll(),
+			'encheres' => $enchereRepository->findByEnchereAvailable(),
 		]);
     }
 	

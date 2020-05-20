@@ -55,16 +55,13 @@ div.produits h2.prix {
 	font-size: 1.1em;
 }
 
-div.produits div.image {
+div.produits div.image img {
+	max-width: 200px;
 	opacity: 0.9;
 }
 
-div.produits div.image:hover {
+div.produits div.image img:hover {
 	opacity: 1;
-}
-
-div.produits div.image img {
-	max-width: 200px;
 }
 
 div.produits input.prix-placer {
