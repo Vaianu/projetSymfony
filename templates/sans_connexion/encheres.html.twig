@@ -59,7 +59,10 @@
 			</nav>
 		</header>
 	
-		<div id="icone-chargement"><img alt="icone chargement" src="{{ asset('images/icones/icone-chargement.gif') }}"></div>
+		<div id="icone-chargement">
+			<img alt="icone chargement" src="{{ asset('images/icones/icone-chargement.gif') }}">
+			<h3 id="texte-chargement">chargement des enchères</h3>
+		</div>
 		
 		<div class="container" style="display:none">
 			<section>
@@ -92,6 +95,7 @@
 {% block javascripts %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	
 	<script type="text/javascript">
 		/**
 		 * Pour attendre que le compte à rebours soit afficher au chargement des enchères
@@ -100,10 +104,12 @@
 		function chargement()
 		{
 			let temps=1500;
+			setTimeout("document.getElementById('texte-chargement').innerHTML = '{{encheres|length}} enchères en cours';",temps-500);
 			setTimeout("document.getElementById('icone-chargement').style.display='none';",temps); // masque l'icone de chargement au bout de 1,5s
 			setTimeout("document.getElementsByClassName('container')[0].style.display='block';",temps+1); // affiche les enchères après masquage icone chargement
 		}
 	</script>
+	
 	<script>
 		let lesEncheres = new Array({{encheres|length}});
 		let indice = 0;
@@ -165,6 +171,10 @@
      
 			return diff;
 		}
+	</script>
+	
+	<script>
+		
 	</script>
 {% endblock %}
 

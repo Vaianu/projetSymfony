@@ -27,7 +27,7 @@ class EnchereRepository extends ServiceEntityRepository
 		date_default_timezone_set('Europe/Paris');
 		$date_heure_actuelle = new \DateTime('now');
 		return $this->createQueryBuilder('e')
-			->andWhere(':date_heure_actuelle > e.date_debut AND :date_heure_actuelle < e.date_fin')
+			->andWhere(':date_heure_actuelle >= e.date_debut AND :date_heure_actuelle < e.date_fin')
 			->setParameter('date_heure_actuelle', $date_heure_actuelle)
             ->getQuery()
             ->getResult();

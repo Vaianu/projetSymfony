@@ -126,10 +126,13 @@ class MyController extends AbstractController
 				$nbJetons += $achat->getPackjetons()->getNbjetons(); 
 			}
 			
-			if($nbJetons > count($user->getHistoriqueEncheres()))
+			date_default_timezone_set('Europe/Paris');
+			$date_heure_actuelle = new \DateTime('now');
+			$enchere = $enchereRepository->find($request->request->get('id_enchere'));
+			if($nbJetons > count($user->getHistoriqueEncheres()) && 
+				$date_heure_actuelle >= $enchere->getDateDebut() && $date_heure_actuelle < $enchere->getDateFin()) // on vérifie si l'enchère est actuellement en cours
 			{
 				$historiqueEncheres = new HistoriqueEncheres();
-				$enchere = $enchereRepository->find($request->request->get('id_enchere'));
 				$historiqueEncheres->setEnchere($enchere);
 				$historiqueEncheres->setPrix($request->request->get('prix_mise'));
 				$user->addHistoriqueEnchere($historiqueEncheres);
