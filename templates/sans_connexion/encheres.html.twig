@@ -73,9 +73,9 @@
 							<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
 							<h2 class="prix text-danger">{{ enchere.produit.prix }}€</h2>
 							<div class="image"><img src="{{ asset(enchere.produit.image) }}" height="220px" alt="{{ enchere.produit.descriptif }}" /></div>
-							<form action="{{ path('utilisateur_placer') }}" method="POST">
+							<form>
 								<input class="prix-placer" type="number" placeholder="de 0.01€ à 500€" step="0.01" min="0.01" max="500" name="prix_mise" required>
-								<button class="btn btn-warning button-placer-offre" name="id_enchere" value="{{ enchere.id }}">Placer une offre</button>
+								<button class="btn btn-warning button-placer-offre">Placer une offre</button>
 							</form>
 						</div>
 					{% else %}
@@ -111,6 +111,7 @@
 	</script>
 	
 	<script>
+	/*********** Pour le compte à rebours ***************/
 		let lesEncheres = new Array({{encheres|length}});
 		let indice = 0;
 		{% for enchere in encheres %}
@@ -174,7 +175,52 @@
 	</script>
 	
 	<script>
+	/******** Pour placer une offre sur une enchère **********/
+		let tabEncheres = new Array({{encheres|length}});
+		let index = 0;
+		{% for enchere in encheres %}
+			tabEncheres[index] = new Array();
+			tabEncheres[index].push("{{enchere.id}}");
+			tabEncheres[index].push("{{enchere.produit.descriptif}}");
+			index++;
+		{% endfor %}
 		
+		let tabBoutonPlacerOffre = document.getElementsByClassName('button-placer-offre');
+			
+		//let nbJetons = {#{{nbJetons}}#};
+		for(let i=0; i<tabBoutonPlacerOffre.length; i++) {
+			tabBoutonPlacerOffre[i].addEventListener('click',function(e){
+				e.preventDefault();
+				{% if app.user == null %} // si utilisateur pas connecter, on le renvoie vers la page de connexion
+					document.location.href = "{{ path('utilisateur_placer') }}";
+				{% else %}
+					//dateDiff();
+					let prix_mise = tabBoutonPlacerOffre[i].previousElementSibling.value;
+					if({{nbJetons}} > 0 && prix_mise > 0) {
+						//$.post();
+						$.ajax({
+							url: '{{ path('utilisateur_placer') }}',
+							type: 'POST',
+							data: 'prix_mise=' + prix_mise + '&id_enchere=' + tabEncheres[i][0],
+							success: function(event) {
+								alert("Votre mise de "+prix_mise+"€ sur "+tabEncheres[i][1]+" a bien été enregistrée");
+								tabBoutonPlacerOffre[i].previousElementSibling.value = "";
+								// il faut que le controleur renvoie le nombre de jetons restant avec JSON
+								document.getElementsByClassName('nbJetons')[0].innerHTML = document.getElementsByClassName('nbJetons')[0].innerHTML - 1;
+								//nbJetons = reponseJsonNbJetons;
+							}
+						});
+					}
+					else if({{nbJetons}} == 0) {
+						alert("Veuillez recharger vos jetons");
+					}
+					else {
+						alert("Veuillez placer une offre");
+					}
+				{% endif %}
+					
+			});
+		}
 	</script>
 {% endblock %}
 
