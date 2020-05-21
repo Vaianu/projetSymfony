@@ -7,7 +7,8 @@
 {% endblock %}
 
 {% block body %}
-	<div class="page">
+<body onload="chargement()">
+	<div id="page">
 		<header id="BandeMenuHaut">
 			<nav class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -17,7 +18,7 @@
 				</button>
 				<a class="navbar-brand" href="/">
 					<span>
-						<img id="XXX-brand-logo" alt="Brand" src="{{ asset('images/logo.png') }}" width="20" height="20">
+						<img id="XXX-brand-logo" alt="logo" src="{{ asset('images/icones/logo.png') }}" width="25" height="25">
 					</span>
 				</a>
 			</nav>
@@ -58,12 +59,14 @@
 			</nav>
 		</header>
 	
-		<div class="container">
+		<div id="icone-chargement"><img alt="icone chargement" src="{{ asset('images/icones/icone-chargement.gif') }}"></div>
+		
+		<div class="container" style="display:none">
 			<section>
 				<div class="form-group row">
 					{% for enchere in encheres %}
 						<div class="col-md-4 produits">
-							<p>Temps restant <span id="comptearebours{{ enchere.id }}"></span></p>
+							<p class="text-temps-restant">Temps restant <span id="compte-a-rebours{{ enchere.id }}" class="compte-a-rebours"></span></p>
 							<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
 							<h2 class="prix text-danger">{{ enchere.produit.prix }}€</h2>
 							<div class="image"><img src="{{ asset(enchere.produit.image) }}" height="220px" alt="{{ enchere.produit.descriptif }}" /></div>
@@ -78,45 +81,69 @@
 				</div>
 			</section>
 		</div>
+		
 		<footer>
 			<h2>Copyright 2020 Licence Pro ADMS</h2>
 		</footer>
 	</div>
+</body>
 {% endblock %}
 
 {% block javascripts %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		/**
+		 * Pour attendre que le compte à rebours soit afficher au chargement des enchères
+		 * Sinon il risque de s'afficher 1s après l'affichage des enchères
+		 */
+		function chargement()
+		{
+			let temps=1500;
+			setTimeout("document.getElementById('icone-chargement').style.display='none';",temps); // masque l'icone de chargement au bout de 1,5s
+			setTimeout("document.getElementsByClassName('container')[0].style.display='block';",temps+1); // affiche les enchères après masquage icone chargement
+		}
+	</script>
 	<script>
 		let lesEncheres = new Array({{encheres|length}});
 		let indice = 0;
 		{% for enchere in encheres %}
 			lesEncheres[indice] = new Array();
-			lesEncheres[indice].push("comptearebours"+{{enchere.id}}); // ajoute l'id de la div de l'enchère pour compte à rebours
-			lesEncheres[indice].push("{{enchere.dateFin|date('Y-m-d H:i:s')}}"); // ajoute la date et heure pour le décomptement
+			lesEncheres[indice].push("compte-a-rebours{{enchere.id}}"); // ajoute l'id de la div de l'enchère pour compte à rebours
+			lesEncheres[indice].push("{{enchere.dateFin|date('Y-m-d H:i:s')}}"); // ajoute la date et heure de fin de l'enchère pour le décomptement
 			indice++;
 		{% endfor %}
-		start(); // démarre le temps
+		demarrer(); // démarre le temps
 		
-		function start() {
+		function demarrer() {
 			for(let i=0; i<lesEncheres.length; i++) {
-				lesEncheres[i].push(setInterval(function(){ decompte(i); }, 1000)); // ajoute le compteur pour pouvoir l'arrêter après que l'enchère est terminé
-			}
+				lesEncheres[i].push(setInterval(function(){ decompte(i); }, 1000)); // ajoute la valeur d'ID de la minuterie définie
+			}																		 // pour pouvoir arrêter avec clearInterval() après que l'enchère est terminé
 		}
 		
-		function finish(idEnchere) {
+		function terminer(idEnchere) {
 			clearInterval(lesEncheres[idEnchere][2]); // Arrête le temps
-			document.getElementById(lesEncheres[idEnchere][0]).innerHTML = "Enchères terminé"
+			document.getElementById(lesEncheres[idEnchere][0]).innerHTML = "Enchère fermée"
 		}
 		
 		function decompte(idEnchere) {
-			let date_actuelle = new Date();
+			let date_courant = new Date();
 			let date_fin = new Date(lesEncheres[idEnchere][1]);
-			let diff = dateDiff(date_actuelle, date_fin);
-			if (diff.sec < 0) finish(idEnchere);
+			let diff = dateDiff(date_courant, date_fin);
+			if(diff.sec < 0) terminer(idEnchere);
 			else
 			{
-				document.getElementById(lesEncheres[idEnchere][0]).innerHTML = diff.day+"j "+diff.hour+"h "+diff.min+"m "+diff.sec+"s";
+				let texte = diff.day+"j "+diff.hour+"h "+diff.min+"m "+diff.sec+"s";
+				if(diff.day == 0)
+					texte = diff.hour+"h "+diff.min+"m "+diff.sec+"s";
+					
+				if(diff.day == 0 && diff.hour == 0)
+					texte = diff.min+"m "+diff.sec+"s";
+					
+				if(diff.day == 0 && diff.hour == 0 && diff.min < 10)
+					document.getElementById(lesEncheres[idEnchere][0]).style.color = "red";
+				
+				document.getElementById(lesEncheres[idEnchere][0]).innerHTML = texte;
 			}
 		}
 		
