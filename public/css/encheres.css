@@ -3,6 +3,8 @@ body {
 }
 
 .page {
+	/* Pour que le footer reste fixe en bas de la page 
+		même si il n'y a pas de contenu dans le corp de la page */
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
@@ -10,9 +12,9 @@ body {
 
 header {
 	background-color: #000000;
-	position: sticky;
-	top: 0px;
-	z-index: 1;
+	position: sticky; /* pour menu fixe */
+	top: 0px; /* menu fixé en haut de la page*/
+	z-index: 1; /* pour que le contenu ne passe pas sur le menu */
 }
 
 .nbJetons {

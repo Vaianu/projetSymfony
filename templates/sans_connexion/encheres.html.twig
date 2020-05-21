@@ -63,8 +63,7 @@
 				<div class="form-group row">
 					{% for enchere in encheres %}
 						<div class="col-md-4 produits">
-							{#<p>{{ enchere.dateDebut.format('d-m-Y H:i:s') }}</p>
-							<p>{{ enchere.dateFin.format('d-m-Y H:i:s') }}</p>#}
+							<p>Temps restant <span id="comptearebours{{ enchere.id }}"></span></p>
 							<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
 							<h2 class="prix text-danger">{{ enchere.produit.prix }}€</h2>
 							<div class="image"><img src="{{ asset(enchere.produit.image) }}" height="220px" alt="{{ enchere.produit.descriptif }}" /></div>
@@ -88,5 +87,57 @@
 {% block javascripts %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script>
+		let lesEncheres = new Array({{encheres|length}});
+		let indice = 0;
+		{% for enchere in encheres %}
+			lesEncheres[indice] = new Array();
+			lesEncheres[indice].push("comptearebours"+{{enchere.id}}); // ajoute l'id de la div de l'enchère pour compte à rebours
+			lesEncheres[indice].push("{{enchere.dateFin|date('Y-m-d H:i:s')}}"); // ajoute la date et heure pour le décomptement
+			indice++;
+		{% endfor %}
+		start(); // démarre le temps
+		
+		function start() {
+			for(let i=0; i<lesEncheres.length; i++) {
+				lesEncheres[i].push(setInterval(function(){ decompte(i); }, 1000)); // ajoute le compteur pour pouvoir l'arrêter après que l'enchère est terminé
+			}
+		}
+		
+		function finish(idEnchere) {
+			clearInterval(lesEncheres[idEnchere][2]); // Arrête le temps
+			document.getElementById(lesEncheres[idEnchere][0]).innerHTML = "Enchères terminé"
+		}
+		
+		function decompte(idEnchere) {
+			let date_actuelle = new Date();
+			let date_fin = new Date(lesEncheres[idEnchere][1]);
+			let diff = dateDiff(date_actuelle, date_fin);
+			if (diff.sec < 0) finish(idEnchere);
+			else
+			{
+				document.getElementById(lesEncheres[idEnchere][0]).innerHTML = diff.day+"j "+diff.hour+"h "+diff.min+"m "+diff.sec+"s";
+			}
+		}
+		
+		function dateDiff(date1, date2){
+			let diff = {}                           // Initialisation du retour
+			let tmp = date2 - date1;
+ 
+			tmp = Math.floor(tmp/1000);             // Nombre de secondes entre les 2 dates
+			diff.sec = tmp % 60;                    // Extraction du nombre de secondes
+
+			tmp = Math.floor((tmp-diff.sec)/60);    // Nombre de minutes (partie entière)
+			diff.min = tmp % 60;                    // Extraction du nombre de minutes
+ 
+			tmp = Math.floor((tmp-diff.min)/60);    // Nombre d'heures (entières)
+			diff.hour = tmp % 24;                   // Extraction du nombre d'heures
+     
+			tmp = Math.floor((tmp-diff.hour)/24);   // Nombre de jours restants
+			diff.day = tmp;
+     
+			return diff;
+		}
+	</script>
 {% endblock %}
 
