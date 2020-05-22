@@ -206,7 +206,7 @@
 									alert("Votre mise de "+prix_mise+"€ sur "+tabEncheres[i][2]+" a bien été enregistrée");
 									tabBoutonPlacerOffre[i].previousElementSibling.value = "";
 									--nbJetons;
-									document.getElementsByClassName('nbJetons')[0].innerHTML = nbJetons;
+									setTimeout("document.getElementsByClassName('nbJetons')[0].innerHTML = "+nbJetons+";",2000);
 								}
 							});
 						}
