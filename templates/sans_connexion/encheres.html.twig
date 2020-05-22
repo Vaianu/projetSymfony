@@ -176,51 +176,61 @@
 	
 	<script>
 	/******** Pour placer une offre sur une enchère **********/
-		let tabEncheres = new Array({{encheres|length}});
-		let index = 0;
-		{% for enchere in encheres %}
-			tabEncheres[index] = new Array();
-			tabEncheres[index].push("{{enchere.id}}");
-			tabEncheres[index].push("{{enchere.produit.descriptif}}");
-			index++;
-		{% endfor %}
-		
 		let tabBoutonPlacerOffre = document.getElementsByClassName('button-placer-offre');
+		{% if app.user %}
+			let tabEncheres = new Array({{encheres|length}});
+			let index = 0;
+			let nbJetons = {{nbJetons}};
 			
-		//let nbJetons = {#{{nbJetons}}#};
-		for(let i=0; i<tabBoutonPlacerOffre.length; i++) {
-			tabBoutonPlacerOffre[i].addEventListener('click',function(e){
-				e.preventDefault();
-				{% if app.user == null %} // si utilisateur pas connecter, on le renvoie vers la page de connexion
-					document.location.href = "{{ path('utilisateur_placer') }}";
-				{% else %}
-					//dateDiff();
-					let prix_mise = tabBoutonPlacerOffre[i].previousElementSibling.value;
-					if({{nbJetons}} > 0 && prix_mise > 0) {
-						//$.post();
-						$.ajax({
-							url: '{{ path('utilisateur_placer') }}',
-							type: 'POST',
-							data: 'prix_mise=' + prix_mise + '&id_enchere=' + tabEncheres[i][0],
-							success: function(event) {
-								alert("Votre mise de "+prix_mise+"€ sur "+tabEncheres[i][1]+" a bien été enregistrée");
-								tabBoutonPlacerOffre[i].previousElementSibling.value = "";
-								// il faut que le controleur renvoie le nombre de jetons restant avec JSON
-								document.getElementsByClassName('nbJetons')[0].innerHTML = document.getElementsByClassName('nbJetons')[0].innerHTML - 1;
-								//nbJetons = reponseJsonNbJetons;
-							}
-						});
-					}
-					else if({{nbJetons}} == 0) {
-						alert("Veuillez recharger vos jetons");
+			{% for enchere in encheres %}
+				tabEncheres[index] = new Array();
+				tabEncheres[index].push("{{enchere.id}}");
+				tabEncheres[index].push("{{enchere.dateFin|date('Y-m-d H:i:s')}}");
+				tabEncheres[index].push("{{enchere.produit.descriptif}}");
+				index++;
+			{% endfor %}
+			
+			for(let i=0; i<tabBoutonPlacerOffre.length; i++) {
+				tabBoutonPlacerOffre[i].addEventListener('click',function(e){
+					e.preventDefault();
+					let date_courant = new Date();
+					let date_fin = new Date(tabEncheres[i][1]);
+					if(date_courant < date_fin) {
+						let prix_mise = tabBoutonPlacerOffre[i].previousElementSibling.value; // récupère l'offre placée
+						if(nbJetons > 0 && prix_mise > 0 && prix_mise <= 500) {
+							$.ajax({
+								url: '{{ path("utilisateur_placer") }}',
+								type: 'POST',
+								data: 'prix_mise=' + prix_mise + '&id_enchere=' + tabEncheres[i][0],
+								success: function(event) {
+									alert("Votre mise de "+prix_mise+"€ sur "+tabEncheres[i][2]+" a bien été enregistrée");
+									tabBoutonPlacerOffre[i].previousElementSibling.value = "";
+									--nbJetons;
+									document.getElementsByClassName('nbJetons')[0].innerHTML = nbJetons;
+								}
+							});
+						}
+						else if(nbJetons == 0) {
+							alert("Veuillez recharger vos jetons");
+						}
+						else {
+							alert("Veuillez placer une offre valide");
+						}
 					}
 					else {
-						alert("Veuillez placer une offre");
+						alert("Enchère fermée");
 					}
-				{% endif %}
-					
-			});
-		}
+				});
+			}
+			
+		{% else %} // si utilisateur pas connecté, on le renvoie vers la page de connexion au click sur le bouton
+			for(let i=0; i<tabBoutonPlacerOffre.length; i++) {
+				tabBoutonPlacerOffre[i].addEventListener('click',function(e){
+					e.preventDefault();
+					document.location.href = "{{ path('utilisateur_placer') }}";
+				});
+			}
+		{% endif %}
 	</script>
 {% endblock %}
 
