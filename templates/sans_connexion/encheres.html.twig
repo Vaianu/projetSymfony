@@ -70,6 +70,7 @@
 					{% for enchere in encheres %}
 						<div class="col-md-4 produits">
 							<p class="text-temps-restant">Temps restant <span id="compte-a-rebours{{ enchere.id }}" class="compte-a-rebours"></span></p>
+							<p class="enchere-date-fin">date fin {{ enchere.datefin|date('d/m/Y H:i:s') }}</p>
 							<h1 class="descriptif">{{ enchere.produit.descriptif }}</h1>
 							<h2 class="prix text-danger">{{ enchere.produit.prix }}€</h2>
 							<div class="image"><img src="{{ asset(enchere.produit.image) }}" height="220px" alt="{{ enchere.produit.descriptif }}" /></div>

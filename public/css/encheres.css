@@ -59,6 +59,7 @@ div.produits {
 
 div.produits p.text-temps-restant {
 	color: orange;
+	margin-bottom: 0px;
 }
 
 div.produits p span.compte-a-rebours {
@@ -66,6 +67,9 @@ div.produits p span.compte-a-rebours {
 	font-weight: bold;
 }
 
+div.produits p.enchere-date-fin {
+	font-size: 0.7em;
+} 
 
 
 div.produits h1.descriptif {
