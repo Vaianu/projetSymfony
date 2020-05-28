@@ -69,7 +69,7 @@
 					<tbody>
 					{% for achat in achats %}
 						<tr>
-							<td>{{ achat.dateAchat|date('d/m/Y H:i:s') }}</td>
+							<td>{{ achat.dateAchat|date('d/m/Y H:i') }}</td>
 							<td>{{ achat.packJetons.description }}</td>
 							<td>{{ achat.packJetons.prix }} €</td>
 						</tr>
@@ -94,7 +94,9 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
 	<script> 
 		$(document).ready( function () {
-			$('.table').DataTable();
+			$('.table').DataTable({
+				"order": []
+			});
 		});
 	</script>
 {% endblock %}
