@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\AchatFormType;
-use App\Form\HistoriqueEncheresType;
 use App\Repository\EnchereRepository;
+use App\Repository\HistoriqueEncheresRepository;
 use App\Repository\AchatRepository;
 
 
@@ -74,7 +74,7 @@ class MyController extends AbstractController
 	/**
      * @Route("/utilisateur/mes-encheres", name="utilisateur_historiqueEncheres", methods={"GET"})
      */
-    public function historiqueEncheres(): Response
+    public function historiqueEncheres(HistoriqueEncheresRepository $historiqueEncheresRepository): Response
     {
 		$user = $this->getUser();
 		$achats = $user->getAchats();
@@ -84,10 +84,16 @@ class MyController extends AbstractController
 		{
 			$nbJetons += $achat->getPackjetons()->getNbjetons();
 		}
+		
 		$nbJetons -= count($user->getHistoriqueEncheres());
+		
+		$historiqueEncheres = $historiqueEncheresRepository->findBy(
+			['utilisateur' => $user],
+			['date_enchere' => 'DESC']
+		);
 			
 		return $this->render('utilisateur/historiqueEncheres.html.twig', [
-		'historiqueEncheres' => $this->getUser()->getHistoriqueEncheres(),
+		'historiqueEncheres' => $historiqueEncheres,
 		'nbJetons' => $nbJetons,
 		]);
     }
@@ -105,6 +111,7 @@ class MyController extends AbstractController
 		{
 			$nbJetons += $achat->getPackjetons()->getNbjetons();
 		}
+		
 		$nbJetons -= count($user->getHistoriqueEncheres());
 		
 		$achats = $achatRepository->findBy(

@@ -71,7 +71,7 @@
 						<tr>
 							<td>{{ historiqueEnchere.prix }} €</td>
 							<td>{{ historiqueEnchere.enchere.produit.descriptif }}</td>
-							<td>{{ historiqueEnchere.dateEnchere|date('d/m/Y H:i:s') }}</td>
+							<td>{{ historiqueEnchere.dateEnchere|date('d/m/Y H:i') }}</td>
 						</tr>
 					{% else %}
 						<tr>
@@ -94,7 +94,9 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
 	<script> 
 		$(document).ready( function () {
-			$('.table').DataTable();
+			$('.table').DataTable({
+				"order": []
+			});
 		});
 	</script>
 {% endblock %}

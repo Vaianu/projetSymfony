@@ -61,17 +61,17 @@
 				<table class="table display">
 					<thead>
 						<tr>
-							<th>Date</th>
 							<th>Achat</th>
 							<th>Prix</th>
+							<th>Date</th>
 						</tr>
 					</thead>
 					<tbody>
 					{% for achat in achats %}
 						<tr>
-							<td>{{ achat.dateAchat|date('d/m/Y H:i') }}</td>
 							<td>{{ achat.packJetons.description }}</td>
 							<td>{{ achat.packJetons.prix }} €</td>
+							<td>{{ achat.dateAchat|date('d/m/Y H:i') }}</td>
 						</tr>
 					{% else %}
 						<tr>
